@@ -3,6 +3,7 @@ const zod = require("zod");
 const bcrypt = require("bcrypt");
 const router = express.Router();
 const User = require("../models/db");
+const Account = require("../models/db");
 const SECRET = "BLABLABLA";
 const jwt = require("jsonwebtoken");
 const { authMiddleware } = require("../middleware/authMiddleware");
@@ -45,9 +46,14 @@ router.post("/signup", async(req,res) => {
 
         const dbUser = await User.create(userData);
 
+        await Account.create({
+            userId,
+            balance: 1 + Math.random() * 10000
+        })
+
         res.status(201).json({
             msg: "User Signup success",
-            dbUser
+            // dbUser
         })
     }
     catch(err){
