@@ -4,12 +4,13 @@ const express = require("express");
 const mongoose = require("mongoose")
 const cors = require("cors");
 const mainRouter = require("./routes/index")
+const MONGOURI = process.env.MONGO_URI;
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect("mongodb+srv://hnanda005:Mongodbtest24%40@test-db.d1aau5r.mongodb.net/paytm")
+mongoose.connect(MONGOURI)
 .then(() => {console.log("DB Connected")})
 .catch((err) => {console.log("Error connecting to DB" + err)})
 
