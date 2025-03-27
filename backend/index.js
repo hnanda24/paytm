@@ -1,3 +1,5 @@
+const dotenv = require("dotenv");
+dotenv.config();
 const express = require("express");
 const mongoose = require("mongoose")
 const cors = require("cors");
@@ -7,7 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect("mongodb://localhost:27017/paytm")
+mongoose.connect("mongodb+srv://hnanda005:Mongodbtest24%40@test-db.d1aau5r.mongodb.net/paytm")
 .then(() => {console.log("DB Connected")})
 .catch((err) => {console.log("Error connecting to DB" + err)})
 

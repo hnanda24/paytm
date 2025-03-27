@@ -2,11 +2,13 @@ const express = require("express");
 const zod = require("zod");
 const bcrypt = require("bcrypt");
 const router = express.Router();
-const User = require("../models/db");
-const Account = require("../models/db");
-const SECRET = "BLABLABLA";
+const {User} = require("../models/db");
+const {Account} = require("../models/db");
 const jwt = require("jsonwebtoken");
 const { authMiddleware } = require("../middleware/authMiddleware");
+const mongoose = require("mongoose")
+const SECRET = process.env.SECRET;
+
 
 const signupSchema = zod.object({
     username: zod.string(),
@@ -30,6 +32,7 @@ const updateDataSchema = zod.object({
 router.post("/signup", async(req,res) => {
     try{
         const body = req.body;
+        // console.log(body)
         const {success} = signupSchema.safeParse(req.body);
         if(!success){
             return res.json({
@@ -38,36 +41,40 @@ router.post("/signup", async(req,res) => {
         }
 
         const hashedPassword = await bcrypt.hash(body.password,10);
-
+        // console.log(hashedPassword)
         const userData = {
             ...body,
             password: hashedPassword
         }
-
+        
+        // console.log(userData)
         const dbUser = await User.create(userData);
+        // await dbUser.save()
 
+        // console.log(dbUser)
         await Account.create({
-            userId,
-            balance: 1 + Math.random() * 10000
+            userId: dbUser._id,
+            balance: 0
         })
 
         res.status(201).json({
-            msg: "User Signup success",
-            // dbUser
+            msg: "User Signup success"
         })
     }
     catch(err){
         res.status(500).json({
             msg: "Internal Server error",
-            err
+            err: err.message
         })
     }
 })
 
-router.post("/login", async(req,res) => {
+router.post("/login",authMiddleware, async(req,res) => {
     try{
         const body = req.body;
         const {success} = loginSchema.safeParse(req.body);
+        // console.log(SECRET)
+
         if(!success){
             return res.json({
                 msg: "Wrong email or password"
@@ -92,6 +99,7 @@ router.post("/login", async(req,res) => {
         }
 
         var token = jwt.sign({email: validUser.email}, SECRET)
+        // console.log(SECRET)
         return res.json({
             token,
             message: "Logged in"
@@ -109,7 +117,6 @@ router.put('/update',authMiddleware, async(req,res) => {
     try{
         const updates = req.body;
         const id = updates.id;
-
         const {success} = updateDataSchema.safeParse(updates);
         if(!success){
             return res.json({
@@ -130,6 +137,10 @@ router.put('/update',authMiddleware, async(req,res) => {
                 msg: "User not found"
             })
         }
+
+        return res.status(200).json({
+            msg: "User updated"
+        })
     }
 
     catch(err){
@@ -148,11 +159,13 @@ router.get("/search", async(req,res) => {
     const users = await User.find({
         $or: [{
             firstName:{
-                "$regex": filter
+                $regex : filter, 
+                $options: "i"
             }
         },{
             lastName: {
-                "$regex": filter
+                "$regex": filter,
+                $options: "i" 
             }
         }]
     })

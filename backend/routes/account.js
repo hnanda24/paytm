@@ -1,6 +1,6 @@
 const express = require("express");
 const { authMiddleware } = require("../middleware/authMiddleware");
-const { Account } = require("../models/db");
+const { Account, User } = require("../models/db");
 const router = express.Router();
 const zod = require("zod");
 const mongoose = require("mongoose");
@@ -10,11 +10,15 @@ const updateBalanceSchema = zod.object({
     balance: zod.number().min(0, "Balance must be a positive number"),
 });
 
-// Get balance
+
 router.get("/balance", authMiddleware, async (req, res) => {
     try {
+        const accountHolder = await User.findOne({
+            email: req.decodedToken.email
+        })
+
         const account = await Account.findOne({
-            userId: req.userId,
+            userId: accountHolder._id
         });
 
         if (!account) {
@@ -35,16 +39,19 @@ router.get("/balance", authMiddleware, async (req, res) => {
 });
 
 // Transfer amount
-router.post("/transfer", authMiddleware, async (req, res) => {
+router.post("/transfer",  async (req, res) => {
     const session = await mongoose.startSession();
     try {
         session.startTransaction();
 
         const { amount, to } = req.body;
+        console.log(req.body)
 
         const account = await Account.findOne({
-            userId: req.userId,
+            userId: req.body.userId,
         }).session(session);
+
+        console.log(account);
 
         if (!account || account.balance < amount) {
             await session.abortTransaction();
@@ -66,7 +73,7 @@ router.post("/transfer", authMiddleware, async (req, res) => {
 
         // Update balances
         await Account.updateOne(
-            { userId: req.userId },
+            { userId: req.body.userId },
             { $inc: { balance: -amount } }
         ).session(session);
 
@@ -91,7 +98,7 @@ router.post("/transfer", authMiddleware, async (req, res) => {
 });
 
 // Add balance
-router.post("/addBalance", authMiddleware, async (req, res) => {
+router.post("/addBalance",async (req, res) => {
     try {
         const { accountId, balance } = req.body;
 
@@ -103,9 +110,14 @@ router.post("/addBalance", authMiddleware, async (req, res) => {
             });
         }
 
-        const updatedAccount = await Account.findByIdAndUpdate(
-            accountId,
-            { balance },
+        const userData = await Account.findOne({
+            userId: accountId
+        })
+        userData.balance += balance;
+
+        const updatedAccount = await Account.findOneAndUpdate(
+            {userId: accountId},
+            { balance: userData.balance},
             { new: true }
         );
 

@@ -1,4 +1,4 @@
-const SECRET = "BLABLABLA";
+const SECRET = process.env.SECRET;
 const jwt = require("jsonwebtoken");
 
 async function authMiddleware(req,res,next){
