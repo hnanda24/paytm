@@ -69,7 +69,7 @@ router.post("/signup", async(req,res) => {
     }
 })
 
-router.post("/login",authMiddleware, async(req,res) => {
+router.post("/login", async(req,res) => {
     try{
         const body = req.body;
         const {success} = loginSchema.safeParse(req.body);
@@ -99,7 +99,7 @@ router.post("/login",authMiddleware, async(req,res) => {
         }
 
         var token = jwt.sign({email: validUser.email}, SECRET)
-        // console.log(SECRET)
+        // console.log(token)
         return res.json({
             token,
             message: "Logged in"
@@ -115,8 +115,15 @@ router.post("/login",authMiddleware, async(req,res) => {
 
 router.put('/update',authMiddleware, async(req,res) => {
     try{
+        const userToUpdate = await User.findOne({
+            email: req.decodedToken.email
+        })
+        // console.log(userToUpdate)
         const updates = req.body;
-        const id = updates.id;
+        // console.log(updates)
+        const id = userToUpdate._id;
+        // console.log(id)
+
         const {success} = updateDataSchema.safeParse(updates);
         if(!success){
             return res.json({

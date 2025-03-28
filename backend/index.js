@@ -10,6 +10,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
 mongoose.connect(MONGOURI)
 .then(() => {console.log("DB Connected")})
 .catch((err) => {console.log("Error connecting to DB" + err)})
