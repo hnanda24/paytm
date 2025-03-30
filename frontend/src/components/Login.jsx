@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { loginStatus } from "../../store/atoms/atom";
 
 const Login = () => {
+  const setIsLoggedIn = useSetRecoilState(loginStatus);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -27,6 +31,7 @@ const Login = () => {
     //   console.log(data.token)
       if (response.ok) {
         localStorage.setItem("token", data.token);
+        setIsLoggedIn(true)
         navigate("/"); // Redirect to Home page
       } else {
         alert(data.msg || "Invalid Credentials");

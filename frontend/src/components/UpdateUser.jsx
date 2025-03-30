@@ -25,11 +25,23 @@ const UpdateUser = () => {
         return;
       }
 
+      if(formData.firstName.length === 0 ){
+        delete formData.firstName
+      }
+
+      if(formData.lastName.length === 0 ){
+        delete formData.lastName
+      }
+
+      if(formData.password.length <=4 ){
+        delete formData.password
+      }
+
       const response = await fetch("http://localhost:3000/api/v1/user/update", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          token: `${token}`,
         },
         body: JSON.stringify(formData),
       });

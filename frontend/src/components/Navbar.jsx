@@ -1,27 +1,76 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect} from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {useRecoilState} from 'recoil';
+import { loginStatus } from "../../store/atoms/atom";
 
 const Navbar = () => {
+  const [isLoggedIn,setIsLoggedIn] = useRecoilState(loginStatus);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if(token){
+      setIsLoggedIn(true)
+    }
+    else{
+      setIsLoggedIn(false)
+    }
+  },[])
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    navigate("/login")
+  }
+
   return (
-    <nav className="bg-blue-600 text-white py-4 px-6 shadow-lg">
+    <nav className="bg-blue-600 text-white px-4 py-3">
       <div className="container mx-auto flex justify-between items-center">
-        <div className="text-2xl font-bold">
-          <Link to="/">PayWallet</Link>
-        </div>
-        <div className="space-x-6">
-          <Link to="/signup" className="hover:text-gray-200 transition">
-            Sign Up
-          </Link>
-          <Link to="/login" className="hover:text-gray-200 transition">
-            Login
-          </Link>
-          <Link to="/" className="hover:text-gray-200 transition">
-            Home
-          </Link>
-        </div>
+        <Link to="/" className="text-xl font-bold">
+          Paytm Wallet
+        </Link>
+        <ul className="flex space-x-6">
+          <li>
+            <Link to="/" className="hover:underline">
+              Home
+            </Link>
+          </li>
+          {isLoggedIn ? (
+            <>
+              <li>
+                <Link to="/update" className="hover:underline">
+                  Profile
+                </Link>
+              </li>
+              <li>
+                <button
+                  onClick={handleLogout}
+                  className="hover:underline focus:outline-none"
+                >
+                  Logout
+                </button>
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                <Link to="/login" className="hover:underline">
+                  Login
+                </Link>
+              </li>
+              <li>
+                <Link to="/signup" className="hover:underline">
+                  Signup
+                </Link>
+              </li>
+            </>
+          )}
+        </ul>
       </div>
     </nav>
   );
 };
+
 
 export default Navbar;

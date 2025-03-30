@@ -124,8 +124,9 @@ router.put('/update',authMiddleware, async(req,res) => {
         const id = userToUpdate._id;
         // console.log(id)
 
-        const {success} = updateDataSchema.safeParse(updates);
-        if(!success){
+        const validated = updateDataSchema.safeParse(updates);
+        if(!validated.success){
+            // console.log(validated.error)
             return res.json({
                 msg: "Wrong Inputs"
             })
