@@ -1,36 +1,31 @@
-import React, { useEffect} from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {useRecoilState} from 'recoil';
+import { useRecoilState } from "recoil";
 import { loginStatus } from "../../store/atoms/atom";
+import { FaUserCircle } from "react-icons/fa"; // Importing user profile icon
 
 const Navbar = () => {
-  const [isLoggedIn,setIsLoggedIn] = useRecoilState(loginStatus);
-
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(loginStatus);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if(token){
-      setIsLoggedIn(true)
-    }
-    else{
-      setIsLoggedIn(false)
-    }
-  },[])
+    setIsLoggedIn(!!token); // Converts to boolean
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
-    navigate("/login")
-  }
+    navigate("/login");
+  };
 
   return (
-    <nav className="bg-blue-600 text-white px-4 py-3">
+    <nav className="bg-blue-600 text-white px-4 py-3 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className="text-xl font-bold">
           Paytm Wallet
         </Link>
-        <ul className="flex space-x-6">
+        <ul className="flex space-x-6 items-center">
           <li>
             <Link to="/" className="hover:underline">
               Home
@@ -39,8 +34,9 @@ const Navbar = () => {
           {isLoggedIn ? (
             <>
               <li>
-                <Link to="/update" className="hover:underline">
-                  Profile
+                <Link to="/update" className="hover:underline flex items-center gap-2">
+                  <FaUserCircle className="text-3xl" />
+                  <span className="text-lg">Profile</span>
                 </Link>
               </li>
               <li>
@@ -71,6 +67,5 @@ const Navbar = () => {
     </nav>
   );
 };
-
 
 export default Navbar;
