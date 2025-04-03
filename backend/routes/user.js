@@ -113,6 +113,30 @@ router.post("/login", async(req,res) => {
     }
 })
 
+router.get('/displayUser',authMiddleware, async(req,res) => {
+    try{
+        const loggedInUser = await User.findOne({
+            email: req.decodedToken.email
+        })
+
+        if(!loggedInUser){
+            return(
+                res.status(404).json({
+                    msg: "User not found"
+                }))
+        }
+
+        res.status(201).json(loggedInUser)
+    }
+
+    catch(err){
+        return
+            res.status(500).json({
+                msg: err.message
+            })
+    }
+})
+
 router.put('/update',authMiddleware, async(req,res) => {
     try{
         const userToUpdate = await User.findOne({

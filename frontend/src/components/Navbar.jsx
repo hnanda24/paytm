@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { loginStatus } from "../../store/atoms/atom";
-import { FaUserCircle } from "react-icons/fa"; // Importing user profile icon
+import { FaUserCircle } from "react-icons/fa";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(loginStatus);
@@ -10,7 +10,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token); // Converts to boolean
+    setIsLoggedIn(!!token);
   }, []);
 
   const handleLogout = () => {
@@ -20,29 +20,27 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-blue-600 text-white px-4 py-3 shadow-md">
+    <nav className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-4 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-xl font-bold">
+        <Link to="/" className="text-2xl font-extrabold tracking-wide">
           Paytm Wallet
         </Link>
-        <ul className="flex space-x-6 items-center">
+        <ul className="flex space-x-6 items-center text-lg">
           <li>
-            <Link to="/" className="hover:underline">
-              Home
-            </Link>
+            <Link to="/" className="hover:text-gray-300 transition">Home</Link>
           </li>
           {isLoggedIn ? (
             <>
               <li>
-                <Link to="/update" className="hover:underline flex items-center gap-2">
+                <Link to="/update" className="hover:text-gray-300 flex items-center gap-2 transition">
                   <FaUserCircle className="text-3xl" />
-                  <span className="text-lg">Profile</span>
+                  <span>Profile</span>
                 </Link>
               </li>
               <li>
                 <button
                   onClick={handleLogout}
-                  className="hover:underline focus:outline-none"
+                  className="bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600 transition"
                 >
                   Logout
                 </button>
@@ -51,12 +49,13 @@ const Navbar = () => {
           ) : (
             <>
               <li>
-                <Link to="/login" className="hover:underline">
-                  Login
-                </Link>
+                <Link to="/login" className="hover:text-gray-300 transition">Login</Link>
               </li>
               <li>
-                <Link to="/signup" className="hover:underline">
+                <Link
+                  to="/signup"
+                  className="bg-green-500 px-4 py-2 rounded-lg hover:bg-green-600 transition"
+                >
                   Signup
                 </Link>
               </li>

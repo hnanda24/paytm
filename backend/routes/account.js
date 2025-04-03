@@ -10,7 +10,7 @@ const updateBalanceSchema = zod.object({
     balance: zod.number().min(0, "Balance must be a positive number"),
 });
 
-
+//check user's balance
 router.get("/balance", authMiddleware, async (req, res) => {
     try {
         const accountHolder = await User.findOne({
