@@ -67,7 +67,7 @@ const UserDashboard = () => {
   };
 
   return (
-    <div className="min-h-[60vh] flex flex-col items-center bg-gradient-to-r from-purple-500 to-indigo-600 p-6 gap-6">
+    <div>
       <div className="bg-white shadow-lg rounded-xl p-6 w-full max-w-md">
         <h2 className="text-xl font-bold text-center text-indigo-700">User Dashboard</h2>
         {message && <p className="text-center text-red-500">{message}</p>}
@@ -108,8 +108,6 @@ const UserDashboard = () => {
           </button>
         </div>
       </div>
-      
-      <TransferMoney/>
     </div>
   );
 };

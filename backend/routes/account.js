@@ -45,13 +45,13 @@ router.post("/transfer",  async (req, res) => {
         session.startTransaction();
 
         const { amount, to } = req.body;
-        console.log(req.body)
+        // console.log(req.body)
 
         const account = await Account.findOne({
             userId: req.body.userId,
         }).session(session);
 
-        console.log(account);
+        // console.log(account);
 
         if (!account || account.balance < amount) {
             await session.abortTransaction();

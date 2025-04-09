@@ -5,8 +5,7 @@ import Login from "./components/Login"
 import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
 import UpdateUser from "./components/UpdateUser"
-import UserDashboard from "./components/UserDashboard"
-import TransferMoney from "./components/TransferMoney"
+import MainContainer from "./components/MainContainer"
 
 function App() {
 
@@ -16,7 +15,7 @@ function App() {
         <Navbar/>
           <Routes>
             <Route path="/signup" element = {<SignUp/>} />
-            <Route path="/" element = {<UserDashboard/>} />
+            <Route path="/" element = {<MainContainer/>} />
             <Route path="/login" element = {<Login/>} />
             <Route path="/update" element = {<UpdateUser/>} />
           </Routes>
