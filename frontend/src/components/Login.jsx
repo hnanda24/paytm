@@ -27,10 +27,12 @@ const Login = () => {
         body: JSON.stringify(formData),
       });
       const data = await response.json();
-    //   console.log(data)
+      // console.log(data)
     //   console.log(data.token)
+    // console.log(data.userId)
       if (response.ok) {
         localStorage.setItem("token", data.token);
+        localStorage.setItem("userId", data.userId)
         setIsLoggedIn(true)
         navigate("/"); // Redirect to Home page
       } else {

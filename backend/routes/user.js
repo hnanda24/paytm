@@ -101,6 +101,7 @@ router.post("/login", async(req,res) => {
         var token = jwt.sign({email: validUser.email}, SECRET)
         // console.log(token)
         return res.json({
+            "userId" : validUser._id,
             token,
             message: "Logged in"
         })
